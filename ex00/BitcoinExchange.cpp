@@ -6,7 +6,7 @@
 /*   By: katchogl <katchogl@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/03 09:56:39 by katchogl          #+#    #+#             */
-/*   Updated: 2023/03/15 08:13:37 by katchogl         ###   ########.fr       */
+/*   Updated: 2023/03/18 20:30:44 by katchogl         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -167,13 +167,19 @@ std::map<Date, double>  BitcoinExchange::_parse( std::string dbPathn )
 	return (map);
 }
 
-// display an error on the std out
 int	BitcoinExchange::_putError ( std::string err )
 {
-	std::cerr << "\001\033[0;30m\002!Error: " << err << "\001\033[0m\002" << std::endl;
+	std::cerr << "\001\033[0;31m\002Error: " << err << "\001\033[0m\002" << std::endl;
 	return (1);
 }
-	
+
+// display an error on the std out
+int	BitcoinExchange::_putWarning ( std::string err )
+{
+	std::cerr << "\001\033[0;33m\002Warning: " << err << "\001\033[0m\002" << std::endl;
+	return (1);
+}
+
 // returns whether a str is empty or not
 bool	BitcoinExchange::_isEmpty ( std::string s )
 {
@@ -271,9 +277,12 @@ int	BitcoinExchange::toBitcoin( std::string dbPathn, std::string amountsPathn )
 							{
 								it = db.find (date);
 								if (it != db.end ())
-									std::cout << date << " => " << val << " * " << it->second << " = " << val * it->second << " btc." << std::endl;
+									std::cout << "\001\033[0;36m\002"
+										<< date << " => " << val << " * " 
+										<< it->second << " = " << val * it->second 
+										<< " btc." << "\001\033[0m\002" << std::endl;
 								else
-									_putError ("no available bitcoin exchange rate for day => " + dateStr);
+									_putWarning ("no available exchange rate for this day => " + dateStr);
 							}
 							else if (val < 0)
 								_putError ("not a positive amount: " + valStr);

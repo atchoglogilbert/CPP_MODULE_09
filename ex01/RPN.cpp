@@ -6,7 +6,7 @@
 /*   By: katchogl <katchogl@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/05 12:08:59 by katchogl          #+#    #+#             */
-/*   Updated: 2023/03/18 20:17:56 by katchogl         ###   ########.fr       */
+/*   Updated: 2023/03/18 20:19:09 by katchogl         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,6 @@ RPN::RPN( RPN const & rpn ) { (void) rpn; }
 RPN &RPN::operator=( RPN const & rpn ) { (void) rpn; return (*this); }
 
 RPN::~RPN( void ) {}
-
 
 void RPN::_calculate ( std::stack<int> & lvls, const std::string & expr, const size_t & i )
 {

@@ -6,7 +6,7 @@
 /*   By: katchogl <katchogl@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/03 09:58:11 by katchogl          #+#    #+#             */
-/*   Updated: 2023/03/15 08:13:44 by katchogl         ###   ########.fr       */
+/*   Updated: 2023/03/18 20:26:57 by katchogl         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,6 +63,7 @@ class BitcoinExchange
 		~BitcoinExchange( void );
 
 		static int _putError( std::string err );
+		static int _putWarning( std::string err );
 		static int	toBitcoin( std::string dbPathn, std::string amountsPathn );
 };
 #endif
