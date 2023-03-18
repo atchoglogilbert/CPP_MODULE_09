@@ -6,7 +6,7 @@
 /*   By: katchogl <katchogl@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/03 14:20:06 by katchogl          #+#    #+#             */
-/*   Updated: 2023/03/05 13:59:34 by katchogl         ###   ########.fr       */
+/*   Updated: 2023/03/18 20:17:52 by katchogl         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,8 @@ class RPN
 		~RPN( void );
 	
 	public:
-		static		int calc( std::string expr );
+		static int calc( const std::string & expr );
+		static void _calculate( std::stack<int> & lvls, const std::string & expr, const size_t & i );
 
 	class InvalidCharacter: public std::exception
 	{
