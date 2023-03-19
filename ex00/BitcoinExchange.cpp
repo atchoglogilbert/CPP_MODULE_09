@@ -6,7 +6,7 @@
 /*   By: katchogl <katchogl@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/03 09:56:39 by katchogl          #+#    #+#             */
-/*   Updated: 2023/03/19 02:48:45 by katchogl         ###   ########.fr       */
+/*   Updated: 2023/03/19 04:52:14 by katchogl         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,6 +100,11 @@ bool Date::operator< ( const Date & d ) const
 		return (false);
 }
 
+bool Date::operator> ( const Date & d ) const
+{
+	return (!(*this < d) && !(*this == d));
+}
+
 // Date & Date::operator() ( void )
 // {
 // 	return (*this);	
@@ -178,13 +183,6 @@ int	BitcoinExchange::_putError ( std::string err )
 	return (1);
 }
 
-// display an error on the std out
-int	BitcoinExchange::_putWarning ( std::string err )
-{
-	std::cerr << "\001\033[0;33m\002Warning: " << err << "\001\033[0m\002" << std::endl;
-	return (2);
-}
-
 // returns whether a str is empty or not
 bool	BitcoinExchange::_isEmpty ( std::string s )
 {
@@ -244,7 +242,9 @@ int	BitcoinExchange::toBitcoin( std::string dbPathn, std::string amountsPathn )
 	double								val;
 	Date								date;
 	std::map<Date, double>::iterator	it;
+	std::map<Date, double>::iterator	it2;
 	bool								isHeader;
+	bool								bool_lower;
 	
 	s.open (dbPathn);
 	if (!s.is_open ())
@@ -283,20 +283,31 @@ int	BitcoinExchange::toBitcoin( std::string dbPathn, std::string amountsPathn )
 								it = db.find (date);
 								if (it != db.end ())
 									std::cout << "\001\033[0;36m\002"
-										<< date << " => " << val << " * " 
+										<< date << " => " << val << " *" 
 										<< it->second << " = " << val * it->second 
 										<< " btc." << "\001\033[0m\002" << std::endl;
 								else
 								{
-									it = std::lower_bound (db.begin (), db.end (), date);
+									bool_lower = false;
+									it2 = db.begin ();
+									it = db.end ();
+									while (it2 != db.end ())
+									{
+										if (it2->first < date && (!bool_lower
+											|| it2->first > it->first))
+										{
+											it = it2;
+											if (!bool_lower)
+												bool_lower = true;
+										}
+										it2++;
+									}
 									if (it != db.end ())
 									{
-										std::cout << "value found" << std::endl;
-										
-									// std::cout << "\001\033[0;36m\002"
-									// 	<< date << " => " << val << " * " 
-									// 	<< it->second << " = " << val * it->second 
-									// 	<< " btc." << "\001\033[0m\002" << std::endl;
+										std::cout << "\001\033[0;33m\002Warning: using lower closest date for "
+											<< date << " (" << it->first << ")" " => " << val << " *" 
+											<< it->second << " = " << val * it->second 
+											<< " btc." << "\001\033[0m\002" << std::endl;
 									}
 									else
 										_putError ("no available exchange rate for this day => " + dateStr);

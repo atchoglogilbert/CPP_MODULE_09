@@ -6,7 +6,7 @@
 /*   By: katchogl <katchogl@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/03 09:58:11 by katchogl          #+#    #+#             */
-/*   Updated: 2023/03/19 02:52:27 by katchogl         ###   ########.fr       */
+/*   Updated: 2023/03/19 04:47:14 by katchogl         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,6 +42,7 @@ class Date
 		// utils
 		bool operator==( const Date & d ) const;
 		bool operator<( const Date & d ) const;
+		bool operator>( const Date & d ) const;
 		// Date &operator()( void );
 };
 
@@ -64,7 +65,6 @@ class BitcoinExchange
 		~BitcoinExchange( void );
 
 		static int _putError( std::string err );
-		static int _putWarning( std::string err );
 		static int	toBitcoin( std::string dbPathn, std::string amountsPathn );
 };
 #endif

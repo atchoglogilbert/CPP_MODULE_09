@@ -6,7 +6,7 @@
 /*   By: katchogl <katchogl@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/05 12:08:59 by katchogl          #+#    #+#             */
-/*   Updated: 2023/03/19 03:54:27 by katchogl         ###   ########.fr       */
+/*   Updated: 2023/03/19 04:23:38 by katchogl         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,15 @@ RPN &RPN::operator=( RPN const & rpn ) { (void) rpn; return (*this); }
 
 RPN::~RPN( void ) {}
 
+bool RPN::_is_single_op ( const std::string & expr, size_t i )
+{
+	while (expr[++i])
+		if (expr[i] == '+' || expr[i] == '-' || expr[i] == '*'
+			|| expr[i] == '/')
+			return (false);
+	return (true);
+}
+
 void RPN::_calculate ( std::stack<int> & lvls, const std::string & expr, const size_t & i )
 {
 	std::string	s;
@@ -30,7 +39,7 @@ void RPN::_calculate ( std::stack<int> & lvls, const std::string & expr, const s
 		return ;
 	high = lvls.top ();
 	lvls.pop ();
-	if (lvls.size () > 1 && expr[i + 1] == '\0') // handle insufficient operators
+	if (lvls.size () > 1 && _is_single_op (expr, i)) // handle insufficient operators
 	{
 		s = "";
 		while (lvls.size () > 0)
@@ -51,13 +60,6 @@ void RPN::_calculate ( std::stack<int> & lvls, const std::string & expr, const s
 	lvls.pop ();
 	lvls.push (res);
 }
-// 2-> 2 4 -2
-
-
-// 5 4 -
-// 5 is pushed
-// 4 is pushed;
-// 4 is on top of bottom: 5 - 4
 
 int RPN::calc( const std::string & expr )
 {

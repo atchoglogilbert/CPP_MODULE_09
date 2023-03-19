@@ -6,7 +6,7 @@
 /*   By: katchogl <katchogl@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/03 14:20:06 by katchogl          #+#    #+#             */
-/*   Updated: 2023/03/19 02:58:27 by katchogl         ###   ########.fr       */
+/*   Updated: 2023/03/19 04:18:47 by katchogl         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,7 @@ class RPN
 		~RPN( void );
 	
 		static void _calculate( std::stack<int> & lvls, const std::string & expr, const size_t & i );
+		static bool _is_single_op ( const std::string & expr, size_t i );
 
 	public:
 		static int calc( const std::string & expr );
