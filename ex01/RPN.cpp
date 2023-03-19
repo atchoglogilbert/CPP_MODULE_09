@@ -6,7 +6,7 @@
 /*   By: katchogl <katchogl@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/05 12:08:59 by katchogl          #+#    #+#             */
-/*   Updated: 2023/03/18 20:19:09 by katchogl         ###   ########.fr       */
+/*   Updated: 2023/03/19 03:54:27 by katchogl         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,36 +22,48 @@ RPN::~RPN( void ) {}
 
 void RPN::_calculate ( std::stack<int> & lvls, const std::string & expr, const size_t & i )
 {
-	int temp;
-	
-	temp = lvls.top (); // first operand, operation not possible so res is atm eq to first operand
+	std::string	s;
+	int 		high;
+	int 		res;
+
+	if (lvls.size () < 2)
+		return ;
+	high = lvls.top ();
 	lvls.pop ();
-	if (lvls.empty () && expr[i] == '-') // if already empty, either sign or someone is trying to fuck w/ my program
-		temp = -temp;
-	else if (lvls.empty () && (expr[i] == '*' || expr[i] == '/')) // handle multiplication and division with invalid count of operands
-		temp = 0;
-	else
+	if (lvls.size () > 1 && expr[i + 1] == '\0') // handle insufficient operators
 	{
-		while (!lvls.empty ())
+		s = "";
+		while (lvls.size () > 0)
 		{
-			if (expr[i] == '+' || i == expr.length ()) // to handle eof
-				temp = lvls.top () + temp;
-			else if (expr[i] == '-')
-				temp = lvls.top () - temp;
-			else if (expr[i] == '*')
-				temp = lvls.top () * temp;
-			else if (expr[i] == '/')
-				temp = lvls.top () / temp;
+			s = std::to_string (lvls.top ()) + s;
 			lvls.pop ();
 		}
+		lvls.push (std::stoi (s));
 	}
-	lvls.push (temp);
+	if (expr[i] == '+' || i == expr.length ()) // to handle eof
+		res = lvls.top () + high;
+	else if (expr[i] == '-')
+		res = lvls.top () - high;
+	else if (expr[i] == '*')
+		res = lvls.top () * high;
+	else if (expr[i] == '/')
+		res = lvls.top () / high;
+	lvls.pop ();
+	lvls.push (res);
 }
+// 2-> 2 4 -2
+
+
+// 5 4 -
+// 5 is pushed
+// 4 is pushed;
+// 4 is on top of bottom: 5 - 4
 
 int RPN::calc( const std::string & expr )
 {
 	std::stack<int> 	lvls; // RPN calc levels
 	size_t				i;
+	int					temp;
 
 	i = 0;
 	lvls.push (0); // init result
@@ -59,7 +71,21 @@ int RPN::calc( const std::string & expr )
 	{
 		if (expr[i] == '+' || expr[i] == '-' || expr[i] == '*' || expr[i] == '/'
 			|| i == expr.length ())
-			_calculate (lvls, expr, i);
+		{
+			if (lvls.size () == 1 && expr[i] == '-') // if already empty, either sign or someone is trying to fuck w/ my program
+			{
+				temp = lvls.top ();
+				lvls.pop ();
+				lvls.push (-temp);
+			}
+			else if (lvls.size () == 1 && (expr[i] == '*' || expr[i] == '/')) // handle multiplication and division with invalid count of operands
+			{
+				lvls.pop ();
+				lvls.push (0);
+			}
+			else if (!(lvls.size () == 1 && expr[i] == '+')) // if not simple plus
+				_calculate (lvls, expr, i);
+		}
 		else if (expr[i] >= '0' && expr[i] <= '9')
 		{
 			if (lvls.size () == 1 && lvls.top () == 0) // remove init res
@@ -67,7 +93,7 @@ int RPN::calc( const std::string & expr )
 			lvls.push (expr[i] - '0');
 		}
 		else if (expr[i] != ' ')
-			throw InvalidCharacter ();
+			throw UnsupportedCharacter ();
 		i++;
 	}
 	if (lvls.size () != 1)
@@ -75,9 +101,9 @@ int RPN::calc( const std::string & expr )
 	return (lvls.top ());
 }
 
-const char *RPN::InvalidCharacter::what( void ) const throw()
+const char *RPN::UnsupportedCharacter::what( void ) const throw()
 {
-	return ("invalid character");
+	return ("unsupported character");
 }
 
 const char *RPN::InternalError::what( void ) const throw()

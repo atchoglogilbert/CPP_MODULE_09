@@ -6,7 +6,7 @@
 /*   By: katchogl <katchogl@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/03 14:20:06 by katchogl          #+#    #+#             */
-/*   Updated: 2023/03/18 20:19:58 by katchogl         ###   ########.fr       */
+/*   Updated: 2023/03/19 02:58:27 by katchogl         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ class RPN
 	public:
 		static int calc( const std::string & expr );
 
-	class InvalidCharacter: public std::exception
+	class UnsupportedCharacter: public std::exception
 	{
 		public:
 			const char *what( void ) const throw();

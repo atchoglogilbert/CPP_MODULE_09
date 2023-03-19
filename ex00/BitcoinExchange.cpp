@@ -6,7 +6,7 @@
 /*   By: katchogl <katchogl@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/03 09:56:39 by katchogl          #+#    #+#             */
-/*   Updated: 2023/03/18 20:30:44 by katchogl         ###   ########.fr       */
+/*   Updated: 2023/03/19 02:48:45 by katchogl         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,6 +100,11 @@ bool Date::operator< ( const Date & d ) const
 		return (false);
 }
 
+// Date & Date::operator() ( void )
+// {
+// 	return (*this);	
+// }
+
 std::ostream & operator << ( std::ostream & stream, const Date & d )
 {
 	stream << d.getDate ();
@@ -177,7 +182,7 @@ int	BitcoinExchange::_putError ( std::string err )
 int	BitcoinExchange::_putWarning ( std::string err )
 {
 	std::cerr << "\001\033[0;33m\002Warning: " << err << "\001\033[0m\002" << std::endl;
-	return (1);
+	return (2);
 }
 
 // returns whether a str is empty or not
@@ -282,7 +287,20 @@ int	BitcoinExchange::toBitcoin( std::string dbPathn, std::string amountsPathn )
 										<< it->second << " = " << val * it->second 
 										<< " btc." << "\001\033[0m\002" << std::endl;
 								else
-									_putWarning ("no available exchange rate for this day => " + dateStr);
+								{
+									it = std::lower_bound (db.begin (), db.end (), date);
+									if (it != db.end ())
+									{
+										std::cout << "value found" << std::endl;
+										
+									// std::cout << "\001\033[0;36m\002"
+									// 	<< date << " => " << val << " * " 
+									// 	<< it->second << " = " << val * it->second 
+									// 	<< " btc." << "\001\033[0m\002" << std::endl;
+									}
+									else
+										_putError ("no available exchange rate for this day => " + dateStr);
+								}
 							}
 							else if (val < 0)
 								_putError ("not a positive amount: " + valStr);

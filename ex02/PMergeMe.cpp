@@ -6,7 +6,7 @@
 /*   By: katchogl <katchogl@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/03 16:01:47 by katchogl          #+#    #+#             */
-/*   Updated: 2023/03/18 19:55:01 by katchogl         ###   ########.fr       */
+/*   Updated: 2023/03/19 02:13:56 by katchogl         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,6 +59,7 @@ void	PMergeMe::_sort( std::vector<int> & vect,
 		}
 		vect.push_back (val);
 	}
+
 	if (end - begin == (int) vect.size ()) // finally ...
 	{
 		if (vect.size () % 2 == 1) // if size is odd, move single elem to the back
@@ -88,6 +89,7 @@ void	PMergeMe::_sort( std::vector<int> & vect,
 				j--;
 			}
 		}
+
 		shifts = 0;
 		i = vect.size () / 2 + shifts;
 		while (i < (int) vect.size ()) // binary-search insertion until pair in main
@@ -125,9 +127,38 @@ void	PMergeMe::_sort( std::vector<int> & vect,
 	}
 }
 
+int PMergeMe::_at ( std::list<int> & li, int index )
+{
+	std::list<int>::iterator it;
 
+	it = li.begin ();
+	std::advance (it, index);
+	return (*it);
+}
 
-void	PMergeMe::_sort( std::deque<int> & vect,
+void PMergeMe::_assign ( std::list<int> & li, int index, int val )
+{
+	std::list<int>::iterator it;
+
+	it = li.begin ();
+	std::advance (it, index);
+	std::cout << "value before: " << *it << std::endl;
+	*it = val;
+	std::cout << "value after: " << *it << std::endl;
+}
+
+std::list<int>::iterator PMergeMe::_it ( std::list<int> & li, int index )
+{
+	std::list<int>::iterator it;
+
+	it = li.begin ();
+	std::advance (it, index);
+	return (it);
+}
+
+// list
+
+void	PMergeMe::_sort( std::list<int> & vect,
 	int begin, int end )
 {
 	int mid;
@@ -139,7 +170,8 @@ void	PMergeMe::_sort( std::deque<int> & vect,
 	
 	int	lim;
 	int shifts;
-	
+
+
 	if (end - begin > 2) // split of merge sort
 	{
 		mid = (end - begin) / 2;
@@ -153,24 +185,26 @@ void	PMergeMe::_sort( std::deque<int> & vect,
 	}
 	if (end - begin == 2) // sort pairs, keep smaller number, push greater to the back of the vector
 	{
-		if (vect[begin] > vect[begin + 1])
+		if (_at (vect, begin) > _at(vect, begin + 1))
 		{
-			val = vect[begin];
-			vect.erase (vect.begin () + begin);
+			// std::cout << "li 2-a" << std::endl;
+			val = _at (vect, begin);
+			vect.erase (_it (vect, begin));
 		}
 		else
 		{
-			val = vect[begin + 1];
-			vect.erase (vect.begin () + begin + 1);
+			val = _at (vect, begin + 1);
+			vect.erase (_it (vect, begin + 1));
 		}
 		vect.push_back (val);
 	}
 	if (end - begin == (int) vect.size ()) // finally ...
 	{
+
 		if (vect.size () % 2 == 1) // if size is odd, move single elem to the back
 		{
-			val = vect[vect.size () / 2];
-			vect.erase (vect.begin () + vect.size () / 2);
+			val = _at (vect, vect.size () / 2);
+			vect.erase (_it (vect, vect.size () / 2));
 			vect.push_back (val);
 		}
 		i = 0;
@@ -180,15 +214,20 @@ void	PMergeMe::_sort( std::deque<int> & vect,
 			j = k - 1;
 			while (j >= 0)
 			{
-				if (vect[k] < vect[j])
+				if (_at (vect, k) < _at (vect, j))
 				{
-					val = vect[k];
-					vect[k] = vect[j];
-					vect[j] = val;
+					std::cout << "li" << std::endl;
+					val = _at (vect, k);
+	
+	
+					_assign (vect, k, _at (vect, j));
+
+					
+					_assign (vect, j, val);
 					mid = (int) vect.size () / 2;
-					val = vect[k + mid];
-					vect[k + mid] = vect[j + mid];
-					vect[j + mid] = val;
+					val = _at (vect, k + mid);
+					_assign (vect, k + mid, _at (vect, j + mid));
+					_assign (vect, j + mid, val);
 					k = j;
 				}
 				j--;
@@ -208,19 +247,20 @@ void	PMergeMe::_sort( std::deque<int> & vect,
 			{
 				// if (vect.size () % 2 == 1 && i == (int) vect.size () - 1)
 				// 	std::cout << vect[i] << ": " << vect[j]  << ", " << vect[j + 1] << std::endl;
-				if (vect[i] <= *std::min_element (vect.begin (), vect.end ()))
+				if (_at (vect, i) <= *std::min_element (vect.begin (), vect.end ()))
 				{
 					shifts++;
-					val = vect[i];
-					vect.erase (vect.begin () + i);
+					val = _at (vect, i);
+					vect.erase (_it (vect, i));
 					vect.insert (vect.begin (), val);
 					break ;
 				}
-				else if (vect[i] >= vect[j] && vect[i] <= vect[j + 1])
+				else if (_at (vect, i) >= _at (vect, j)
+					&& _at (vect, i) <= _at (vect, j + 1))
 				{
-					val = vect[i];
-					vect.erase (vect.begin () + i);
-					vect.insert (vect.begin () + j + 1, val);
+					val = _at (vect, i);
+					vect.erase (_it (vect, i));
+					vect.insert (_it (vect, j + 1), val);
 					shifts++;
 					break ;
 				}
@@ -243,9 +283,9 @@ int PMergeMe::sort ( char **args )
 	std::vector<int> 	vect;
     clock_t 			end_vect;
 	
-    clock_t 			start_dq;
-	std::deque<int> 	dq;
-    clock_t 			end_dq;
+    clock_t 			start_list;
+	std::list<int> 		li;
+    clock_t 			end_list;
 
 	std::cout << "Before: [";
     data_man_start = clock();
@@ -256,19 +296,19 @@ int PMergeMe::sort ( char **args )
 		std::cout << *args;
 		vect.push_back ( std::stoi (*args) );
 		target.insert ( std::stoi (*args) );
-		dq.insert ( dq.end (), std::atoi (*args) );
+		li.insert (li.end (), std::stoi (*args) );
 		args++;
 	}
 	std::cout << "]" << std::endl;
-	data_man_end = clock (); //
+	data_man_end = clock ();
 
 	start_vect = clock ();
 	_sort (vect, 0, vect.size ());
     end_vect = clock();
 	
-	start_dq = clock ();
-	_sort (dq, 0, vect.size ());
-    end_dq = clock();
+	start_list = clock ();
+	_sort (li, 0, vect.size ());
+    end_list = clock();
 
 
 	std::cout << "After (std::set as target): ["; // target
@@ -286,7 +326,7 @@ int PMergeMe::sort ( char **args )
 		std::cout << *it;
 		it++;
 	}
-	std::cout << "] => " << (static_cast<double>(data_man_end - data_man_start) / (double) 1) << " us" << std::endl;
+	std::cout << "] => " << (static_cast<float>(data_man_end - data_man_start) / CLOCKS_PER_SEC * 1000000) << " ms" << std::endl;
 	
 	std::cout << "After (std::vector): ["; // first container
 	for (std::vector<int>::iterator it = vect.begin (); it < vect.end (); it++)
@@ -295,16 +335,19 @@ int PMergeMe::sort ( char **args )
 			std::cout << " ";
 		std::cout << *it;
 	}
-	std::cout << "] => " << (static_cast<double>(end_vect - start_vect + data_man_end - data_man_start) / (double) 1) << " us" << std::endl;
+	std::cout << "] => " << (static_cast<float>(end_vect - start_vect + data_man_end - data_man_start) / CLOCKS_PER_SEC * 1000000) << " ms" << std::endl;
 
-	std::cout << "After (std::deque): ["; // first container
-	for (std::deque<int>::iterator it = dq.begin (); it < dq.end (); it++)
+	std::cout << "After (std::list): ["; // first container
+	s = false;
+	while (li.size () > 0)
 	{
-		if (it - dq.begin () > 0)
+		if (s)
 			std::cout << " ";
-		std::cout << *it;
+		else
+			s = true;
+		std::cout << li.front ();
+		li.pop_front ();
 	}
-	std::cout << "] => " << (static_cast<double>(end_dq - start_dq + data_man_end - data_man_start) / (double) 1) << " us" << std::endl;
-	
+	std::cout << "] => " << (static_cast<float>(end_list - start_list + data_man_end - data_man_start) / CLOCKS_PER_SEC * 1000000) << " ms" << std::endl;
 	return (0);
 }
