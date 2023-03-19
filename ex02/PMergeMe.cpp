@@ -6,7 +6,7 @@
 /*   By: katchogl <katchogl@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/03 16:01:47 by katchogl          #+#    #+#             */
-/*   Updated: 2023/03/19 02:13:56 by katchogl         ###   ########.fr       */
+/*   Updated: 2023/03/19 06:51:49 by katchogl         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,18 +92,15 @@ void	PMergeMe::_sort( std::vector<int> & vect,
 
 		shifts = 0;
 		i = vect.size () / 2 + shifts;
-		while (i < (int) vect.size ()) // binary-search insertion until pair in main
+		while (i < (int) vect.size ()) // binary-search insertion until pair in main chain
 		{ 	
 			// chain and also insert the number with highest len to insertion cost, ie most pricy insertion get done first
 			lim = i - vect.size () / 2 - shifts;
 			if (vect.size () % 2 == 1 && i == (int) vect.size () - 1)
 				lim = 0;
-			// std::cout << "sorting: " << vect[i] << ", lim: " << lim << std::endl;
 			j = i - 2;
 			while (j >= lim)
 			{
-				// if (vect.size () % 2 == 1 && i == (int) vect.size () - 1)
-				// 	std::cout << vect[i] << ": " << vect[j]  << ", " << vect[j + 1] << std::endl;
 				if (vect[i] <= *std::min_element (vect.begin (), vect.end ()))
 				{
 					shifts++;
@@ -142,9 +139,7 @@ void PMergeMe::_assign ( std::list<int> & li, int index, int val )
 
 	it = li.begin ();
 	std::advance (it, index);
-	std::cout << "value before: " << *it << std::endl;
 	*it = val;
-	std::cout << "value after: " << *it << std::endl;
 }
 
 std::list<int>::iterator PMergeMe::_it ( std::list<int> & li, int index )
@@ -155,8 +150,6 @@ std::list<int>::iterator PMergeMe::_it ( std::list<int> & li, int index )
 	std::advance (it, index);
 	return (it);
 }
-
-// list
 
 void	PMergeMe::_sort( std::list<int> & vect,
 	int begin, int end )
@@ -170,7 +163,6 @@ void	PMergeMe::_sort( std::list<int> & vect,
 	
 	int	lim;
 	int shifts;
-
 
 	if (end - begin > 2) // split of merge sort
 	{
@@ -187,7 +179,6 @@ void	PMergeMe::_sort( std::list<int> & vect,
 	{
 		if (_at (vect, begin) > _at(vect, begin + 1))
 		{
-			// std::cout << "li 2-a" << std::endl;
 			val = _at (vect, begin);
 			vect.erase (_it (vect, begin));
 		}
@@ -216,13 +207,8 @@ void	PMergeMe::_sort( std::list<int> & vect,
 			{
 				if (_at (vect, k) < _at (vect, j))
 				{
-					std::cout << "li" << std::endl;
 					val = _at (vect, k);
-	
-	
 					_assign (vect, k, _at (vect, j));
-
-					
 					_assign (vect, j, val);
 					mid = (int) vect.size () / 2;
 					val = _at (vect, k + mid);
@@ -241,12 +227,9 @@ void	PMergeMe::_sort( std::list<int> & vect,
 			lim = i - vect.size () / 2 - shifts;
 			if (vect.size () % 2 == 1 && i == (int) vect.size () - 1)
 				lim = 0;
-			// std::cout << "sorting: " << vect[i] << ", lim: " << lim << std::endl;
 			j = i - 2;
 			while (j >= lim)
 			{
-				// if (vect.size () % 2 == 1 && i == (int) vect.size () - 1)
-				// 	std::cout << vect[i] << ": " << vect[j]  << ", " << vect[j + 1] << std::endl;
 				if (_at (vect, i) <= *std::min_element (vect.begin (), vect.end ()))
 				{
 					shifts++;
@@ -271,21 +254,20 @@ void	PMergeMe::_sort( std::list<int> & vect,
 	}
 }
 
-
 int PMergeMe::sort ( char **args )
 {
 	clock_t				data_man_start;
 	clock_t				data_man_end;
 	
-	std::set<int>		target;
-	
     clock_t 			start_vect;
 	std::vector<int> 	vect;
     clock_t 			end_vect;
-	
+		
     clock_t 			start_list;
 	std::list<int> 		li;
     clock_t 			end_list;
+	
+	bool				s;
 
 	std::cout << "Before: [";
     data_man_start = clock();
@@ -295,7 +277,6 @@ int PMergeMe::sort ( char **args )
 			std::cout << " ";
 		std::cout << *args;
 		vect.push_back ( std::stoi (*args) );
-		target.insert ( std::stoi (*args) );
 		li.insert (li.end (), std::stoi (*args) );
 		args++;
 	}
@@ -310,44 +291,35 @@ int PMergeMe::sort ( char **args )
 	_sort (li, 0, vect.size ());
     end_list = clock();
 
-
-	std::cout << "After (std::set as target): ["; // target
-	std::set<int>::iterator it;
-
-	bool s;
-	it  = target.begin ();
-	s = false;
-	while (it != target.end ())
-	{
-		if (s)
-			std::cout << " ";
-		else
-			s = true;
-		std::cout << *it;
-		it++;
-	}
-	std::cout << "] => " << (static_cast<float>(data_man_end - data_man_start) / CLOCKS_PER_SEC * 1000000) << " ms" << std::endl;
-	
-	std::cout << "After (std::vector): ["; // first container
+	std::cout << "After (std::vector): [";
 	for (std::vector<int>::iterator it = vect.begin (); it < vect.end (); it++)
 	{
 		if (it - vect.begin () > 0)
 			std::cout << " ";
 		std::cout << *it;
 	}
-	std::cout << "] => " << (static_cast<float>(end_vect - start_vect + data_man_end - data_man_start) / CLOCKS_PER_SEC * 1000000) << " ms" << std::endl;
-
-	std::cout << "After (std::list): ["; // first container
+	std::cout << "] => " << (static_cast<float>(end_vect - start_vect + data_man_end - data_man_start) / CLOCKS_PER_SEC * 1000000) << " us ";
+	if (std::is_sorted (vect.begin (), vect.end ()))
+		std::cout << "ok";
+	else
+		std::cout << "ko";
+	std::cout << std::endl;
+	std::cout << "After (std::list): [";
 	s = false;
 	while (li.size () > 0)
 	{
-		if (s)
-			std::cout << " ";
-		else
+		if (!s)
 			s = true;
+		else
+			std::cout << " ";
 		std::cout << li.front ();
 		li.pop_front ();
 	}
-	std::cout << "] => " << (static_cast<float>(end_list - start_list + data_man_end - data_man_start) / CLOCKS_PER_SEC * 1000000) << " ms" << std::endl;
+	std::cout << "] => " << (static_cast<float>(end_list - start_list + data_man_end - data_man_start) / CLOCKS_PER_SEC * 1000000) << " us ";
+	if (std::is_sorted (li.begin (), li.end ()))
+		std::cout << "ok";
+	else
+		std::cout << "ko";
+	std::cout << std::endl;
 	return (0);
 }

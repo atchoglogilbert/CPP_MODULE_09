@@ -6,7 +6,7 @@
 /*   By: katchogl <katchogl@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/03 09:58:11 by katchogl          #+#    #+#             */
-/*   Updated: 2023/03/19 04:47:14 by katchogl         ###   ########.fr       */
+/*   Updated: 2023/03/19 06:46:32 by katchogl         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,6 @@ class Date
 		bool operator==( const Date & d ) const;
 		bool operator<( const Date & d ) const;
 		bool operator>( const Date & d ) const;
-		// Date &operator()( void );
 };
 
 std::ostream &operator<<(std::ostream & stream, const Date & d);

@@ -1,6 +1,6 @@
 CC						=					c++
 
-CFLAGS					=					-Wall -Werror -Wextra -std=c++98 -g -I./dir
+CFLAGS					=					-Wall -Werror -Wextra -std=c++98
 
 CDEPS					=					RPN.hpp
 

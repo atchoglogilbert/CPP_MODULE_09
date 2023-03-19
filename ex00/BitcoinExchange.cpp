@@ -6,7 +6,7 @@
 /*   By: katchogl <katchogl@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/03 09:56:39 by katchogl          #+#    #+#             */
-/*   Updated: 2023/03/19 04:52:14 by katchogl         ###   ########.fr       */
+/*   Updated: 2023/03/19 06:46:51 by katchogl         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -105,11 +105,6 @@ bool Date::operator> ( const Date & d ) const
 	return (!(*this < d) && !(*this == d));
 }
 
-// Date & Date::operator() ( void )
-// {
-// 	return (*this);	
-// }
-
 std::ostream & operator << ( std::ostream & stream, const Date & d )
 {
 	stream << d.getDate ();
@@ -129,7 +124,6 @@ BitcoinExchange &BitcoinExchange::operator=( const BitcoinExchange & b )
 BitcoinExchange::~BitcoinExchange( void ) {}
 
 // utils
-// c++ version of ft_strtrim
 	std::string	BitcoinExchange::_trim( std::string s )
 	{
 		return (s.substr (s.find_first_not_of (" "), 
